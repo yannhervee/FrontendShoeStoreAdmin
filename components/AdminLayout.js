@@ -21,7 +21,7 @@ const AdminLayout = ({ children }) => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('token');
-    sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('user');
     setUser(null);
     router.push('/login'); // Redirect to login page on logout
   };
