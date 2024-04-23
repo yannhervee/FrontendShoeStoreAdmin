@@ -11,8 +11,9 @@ export default function AdminAddProductPage() {
 
     const [availableSizes, setAvailableSizes] = useState([]);
     const [availableColors, setAvailableColors] = useState([]);
+    const [ecoImpact, setEcoImpact] = useState();
    
-    const id = 102;
+   // const id = 102;
 
 
     // State for size and color management
@@ -63,7 +64,7 @@ export default function AdminAddProductPage() {
             })
             .catch(error => console.error('Failed to load product details:', error));
         setLoading(false);
-    }, [id]);
+    }, []);
 
     // Function to add a new size/color combination
     const handleAddSizeColorCombo = () => {
@@ -168,6 +169,7 @@ export default function AdminAddProductPage() {
             price: productPrice,
             category: { categoryID: parseInt(productCategory) },
             description: productDescription,
+            ecoImpact: ecoImpact,
         },
         sizeColorDTO: sizeColorCombos,
         images: [] // Assuming images are managed differently, adjust as per your requirements
@@ -176,22 +178,22 @@ export default function AdminAddProductPage() {
     // Append JSON data as a string and set type as application/json
     formData.append('product', new Blob([JSON.stringify(jsonData)], {type: "application/json"}));
 
-    // try {
-    //     const response = await fetch("http://localhost:8080/product", {
-    //         method: "POST",
-    //         body: formData,
-    //         // Do not set Content-Type manually; let the browser handle it
-    //     });
+    try {
+        const response = await fetch("http://localhost:8080/admin/product", {
+            method: "POST",
+            body: formData,
+            // Do not set Content-Type manually; let the browser handle it
+        });
 
-    //     if (!response.ok) {
-    //         throw new Error(`HTTP error! Status: ${response.status}`);
-    //     }
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-    //     const result = await response.json();
-    //     console.log('Success:', result);
-    // } catch (error) {
-    //     console.error('Upload failed:', error);
-    // }
+        const result = await response.json();
+        console.log('Success:', result);
+    } catch (error) {
+        console.error('Upload failed:', error);
+    }
 };
 
 
@@ -282,6 +284,20 @@ export default function AdminAddProductPage() {
                         placeholder="Description"
                         value={productDescription}
                         onChange={(e) => setProductDescription(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <div className="mb-6">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="productDescription">
+                        Eco Impact
+                    </label>
+                    <textarea
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="productDescription"
+                        placeholder="Eco Impact"
+                        value={ecoImpact}
+                        onChange={(e) => setEcoImpact(e.target.value)}
                         required
                     />
                 </div>
@@ -425,7 +441,7 @@ export default function AdminAddProductPage() {
                     type="button"
                     onClick={handleSaveChanges}
                 >
-                    Save Changes
+                    Post Product
                 </button>
             </div>
         </div>
