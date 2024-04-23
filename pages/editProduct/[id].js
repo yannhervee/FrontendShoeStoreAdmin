@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
 import axios from 'axios';
 import { useRouter } from 'next/router';
-export default function AdminAddProductPage() {
+export default function AdminEditProduct() {
     // States for product details
     const [productName, setProductName] = useState();
     const [productPrice, setProductPrice] = useState();
@@ -30,12 +31,15 @@ export default function AdminAddProductPage() {
     const [newColor, setNewColor] = useState('');
     const [newQuantity, setNewQuantity] = useState(0);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
+    const { id } = router.query; // Get the product ID from the URL
 
    
 
     // Handlers to update state...
 
     useEffect(() => {
+        console.log("id is ", id);
         // Fetch sizes
         fetch('http://localhost:8080/sizes')
             .then(response => response.json())
@@ -231,7 +235,7 @@ export default function AdminAddProductPage() {
     }
     return (
         <div className="container mx-auto p-4 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h1 className="text-2xl font-bold mb-4">Add New Product</h1>
+            <h1 className="text-2xl font-bold mb-4">Edit Product</h1>
 
             {/* Product Information Section */}
             <div className="mb-8">
