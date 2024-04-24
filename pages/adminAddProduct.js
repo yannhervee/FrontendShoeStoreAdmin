@@ -229,6 +229,10 @@ export default function AdminAddProductPage() {
     if (loading) {
         return <div>Loading...</div>;
     }
+
+    if (!sizeColorCombos || !categories.length) {
+        return <div>No product data available or categories failed to load.</div>;
+    }
     return (
         <div className="container mx-auto p-4 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <h1 className="text-2xl font-bold mb-4">Add New Product</h1>
