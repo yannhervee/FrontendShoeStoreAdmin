@@ -64,7 +64,7 @@ const AdminHome = () => {
           {productsWithLowStock.map(item => (
             <Link href={`editProduct/${item.productId}`}>
             <div className="mt-1">
-              <p className="text-gray-800">{item.name} - <span className="text-red-500"> less than 10 left</span></p>
+              <p className="text-gray-800">{item.name} - <span className="text-red-500"> {item.stockAvailable} left</span></p>
             </div>
             </Link>
           ))}
