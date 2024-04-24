@@ -1,13 +1,14 @@
 import Sidebar from './Sidebar';
 import Link from 'next/link';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faUserTie, faSearch } from '@fortawesome/free-solid-svg-icons';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 const AdminLayout = ({ children }) => {
 
   const[user, setUser] = useState(false);
   const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
   useEffect(() => {
     const token = sessionStorage.getItem('token');
     const userId = sessionStorage.getItem('user');
@@ -25,7 +26,20 @@ const AdminLayout = ({ children }) => {
     setUser(null);
     router.push('/login'); // Redirect to login page on logout
   };
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); // Update the search term as the user types
+  };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    console.log('Searching for:', searchTerm);
+    // Implement your search logic here, possibly setting up a route to display search results
+   
+      if (searchTerm.trim()) {
+        router.push(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+      }
+    
+  };
   return (
 
     <div className="flex h-screen overflow-hidden">
@@ -38,6 +52,19 @@ const AdminLayout = ({ children }) => {
         <header className="bg-green-600 shadow py-4 px-6">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-white">Logo here  EFS - Admin</h1>
+            <form onSubmit={handleSearch} className="flex items-center">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="px-2 py-1 rounded-md border border-green-800 focus:outline-none text-black"
+              style={{ width: '316px' }}
+              />
+               <button type="submit" className="p-2 bg-white hover:bg-gray-200 text-black rounded">
+    <FontAwesomeIcon icon={faSearch} />
+  </button>
+            </form>
             {user && (
               <div className="flex items-center">
                 <span className="text-white mr-6 font-bold">
