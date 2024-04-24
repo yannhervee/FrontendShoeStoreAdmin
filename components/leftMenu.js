@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const LeftMenu = ({ onFilterChange }) => {
   const [expanded, setExpanded] = useState({
@@ -11,17 +11,50 @@ const LeftMenu = ({ onFilterChange }) => {
     color: [],
     priceRange: [],
   });
-  const filterOptions = {
-    size: ["7", "8", "9"],
-    color: ["Red", "Blue", "White", "Brown", "Gold", "Pink", "Black"],
-    priceRange: [
-      "$0 - $25",
-      "$25 - $50",
-      "$50 - $75",
-      "$75 - $100",
-      "$100 - $200",
-    ],
-  };
+ 
+
+  const [availableSizes, setAvailableSizes] = useState([]);
+  const [availableColors, setAvailableColors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+   
+     
+    fetch('http://localhost:8080/sizes')
+    .then(response => response.json())
+    .then(data => {
+        console.log("data for sizes", data);
+        setAvailableSizes(data)
+    })
+    .catch(error => console.error('Failed to load sizes:', error));
+
+// Fetch colors
+fetch('http://localhost:8080/colors')
+    .then(response => response.json())
+    .then(data => {
+        console.log("data for colors", data);
+        setAvailableColors(data)
+    })
+    .catch(error => console.error('Failed to load colors:', error));
+  
+
+
+  setLoading(false);
+}, []);
+
+const filterOptions = {
+  size: availableSizes.map(sizeObj => String(sizeObj.size)),
+  color: availableColors.map(colorObj => colorObj.color.charAt(0).toUpperCase() + colorObj.color.slice(1)),
+  priceRange: [
+    "$0 - $25",
+    "$25 - $50",
+    "$50 - $75",
+    "$75 - $100",
+    "$100 - $200",
+    "$200 - $250",
+      "$250 - $300",
+      "$300 - $700",
+  ],
+};
 
   // Toggle function to handle expansion
   const toggleExpansion = (criterion) => {
@@ -45,6 +78,10 @@ const LeftMenu = ({ onFilterChange }) => {
     // Notify parent component of filter change
     onFilterChange(filterType, newSelectedFilters[filterType]);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <nav className="bg-gray-300 text-gray-800 p-4" style={{ width: "200px" }}>
