@@ -13,6 +13,7 @@ export default function AdminEditProduct() {
     const [availableSizes, setAvailableSizes] = useState([]);
     const [availableColors, setAvailableColors] = useState([]);
     const [ecoImpact, setEcoImpact] = useState();
+    const [product, setProduct] = useState();
 
     // const id = 102;
 
@@ -75,6 +76,7 @@ export default function AdminEditProduct() {
                 //  setProduct(data.product);
                // setProductDescription(data.)
                setProductPrice(data.price)
+               setProduct(data)
                setProductName(data.product.name)
                setProductDescription(data.product.description)
                setProductCategory(data.product.category.categoryID)
@@ -223,7 +225,7 @@ export default function AdminEditProduct() {
 
 
 
-    if (loading) {
+    if (loading || !product) {
         return <div>Loading...</div>;
     }
 
