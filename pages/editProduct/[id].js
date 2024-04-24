@@ -13,8 +13,8 @@ export default function AdminEditProduct() {
     const [availableSizes, setAvailableSizes] = useState([]);
     const [availableColors, setAvailableColors] = useState([]);
     const [ecoImpact, setEcoImpact] = useState();
-   
-   // const id = 102;
+
+    // const id = 102;
 
 
     // State for size and color management
@@ -34,7 +34,7 @@ export default function AdminEditProduct() {
     const router = useRouter();
     const { id } = router.query; // Get the product ID from the URL
 
-   
+
 
     // Handlers to update state...
 
@@ -67,8 +67,25 @@ export default function AdminEditProduct() {
                 // Assuming this format based on your initial data structure
             })
             .catch(error => console.error('Failed to load product details:', error));
+        // Fetch product details
+        fetch(`http://localhost:8080/product/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("data for product", data)
+                //  setProduct(data.product);
+               // setProductDescription(data.)
+               setProductPrice(data.price)
+               setProductName(data.product.name)
+               setProductDescription(data.product.description)
+               setProductCategory(data.product.category.categoryID)
+                setSizeColorCombos(data.sizeColorDTO); // Assuming this format based on your initial data structure
+                // console.log("sizeColor", sizeColorCombos)
+            })
+            .catch(error => console.error('Failed to load product details:', error));
+
         setLoading(false);
-    }, []);
+        console.log("sizeColor", sizeColorCombos)
+    }, [id]);
 
     // Function to add a new size/color combination
     const handleAddSizeColorCombo = () => {
@@ -96,7 +113,7 @@ export default function AdminEditProduct() {
                     isNewSizeColorComboAdded = true;
                 } else {
                     // Add new color to the existing size
-                  //  const newColorId = Math.max(...combo.color.map(c => c.color.id), 0) + 1;
+                    //  const newColorId = Math.max(...combo.color.map(c => c.color.id), 0) + 1;
                     combo.color.push({
                         color: { id: newColorId, color: standardizedNewColor },
                         quantity: newQuantity
@@ -105,7 +122,7 @@ export default function AdminEditProduct() {
                 }
             }
 
-            
+
             return combo;
         });
 
@@ -128,89 +145,47 @@ export default function AdminEditProduct() {
         setNewQuantity(0);
     };
 
- // State to store the images
- const [images, setImages] = useState([]);
+    const handleSaveChanges = async () => {
+        // Construct the request body according to the backend's expected format
 
- // Handle file uploads
- const handleFileChange = (event) => {
-     // Convert uploaded files to an array and add to the existing images array
-     const newImages = Array.from(event.target.files).map(file => ({
-         id: Math.random(), // Assign a random ID (or handle this with a more robust method)
-         url: URL.createObjectURL(file),
-         file
-     }));
-
-    
-     setImages(prevImages => [...prevImages, ...newImages]);
- };
-
- // Handle deleting an image
- const handleDeleteImage = (imageId) => {
-     setImages(prevImages => prevImages.filter(image => image.id !== imageId));
-     // Optional: Revoke the URL to free up memory
-     const imageToDelete = images.find(image => image.id === imageId);
-     URL.revokeObjectURL(imageToDelete.url);
- };
-
-
-
- const handleSaveChanges = async (e) => {
-    e.preventDefault();
-    console.log("see what items I am sending", sizeColorCombos)
-
-    const formData = new FormData();
-
-    // Append image files to FormData
-    images.forEach(image => {
-        formData.append("image", image.file);
-    });
-
-    // Construct JSON data
-    const jsonData = {
-        product: {
-            
-            name: productName,
-            price: productPrice,
-            category: { categoryID: parseInt(productCategory) },
-            description: productDescription,
-            ecoImpact: ecoImpact,
-        },
-        sizeColorDTO: sizeColorCombos,
-        images: [] // Assuming images are managed differently, adjust as per your requirements
-    };
-
-    // Append JSON data as a string and set type as application/json
-    formData.append('product', new Blob([JSON.stringify(jsonData)], {type: "application/json"}));
-
-    try {
-        // Retrieve the token from local storage
-        const token = sessionStorage.getItem('token');
-        if (!token) {
-            throw new Error("No token found in local storage. User might not be logged in.");
-        }
-    
-        const response = await fetch("http://localhost:8080/admin/product", {
-            method: "POST",
-            body: formData,
-            headers: {
-                'Authorization': `Bearer ${token}`
-                // Do not set Content-Type manually; let the browser handle it with FormData
+        console.log("what I am sending")
+        const requestBody = {
+            product: {
+                id: id,  // Assuming `id` is the product ID from the router or state
+                name: productName,
+                price: parseFloat(productPrice),
+                category: {
+                    categoryID: parseInt(productCategory),
+                   // category: categories.find(cat => cat.categoryID.toString() === productCategory)?.category || ""
+                },
+                description: productDescription,
+                ecoImpact: ecoImpact,
             },
-        });
+            sizeColorDTO: sizeColorCombos,
+             
+            price: parseFloat(productPrice),
+            images: []
+        };
     
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+        console.log("request body", requestBody)
+        try {
+            const token = sessionStorage.getItem('token'); // Retrieve the token if authentication is required
+            const response = await axios.put(`http://localhost:8080/admin/product/${id}`, requestBody, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // Assuming your API requires Bearer token authentication
+                }
+            });
+            console.log('Product updated successfully:', response.data);
+            // Handle post-update logic here, such as redirecting the user or showing a success message
+            router.push('/products')
+        } catch (error) {
+            console.error('Failed to update product:', error.response?.data || error.message);
+            // Handle errors, such as displaying an error message to the user
         }
+    };
     
-        const result = await response.json();
-        console.log('Success:', result);
-    } catch (error) {
-        console.error('Upload failed:', error);
-    }
-};
-
-
- 
+    
 
     const handleRemoveSizeColorCombo = (sizeIndex, colorIndex) => {
         const updatedSizeColorCombos = [...sizeColorCombos];
@@ -227,12 +202,36 @@ export default function AdminEditProduct() {
         setSizeColorCombos(updatedSizeColorCombos);
     };
 
+    const handleStockChange = (sizeIndex, colorIndex, newQuantity) => {
+        const newCombos = sizeColorCombos.map((item, idx) => {
+            if (idx === sizeIndex) {
+                const newColors = item.color.map((col, cIdx) => {
+                    if (cIdx === colorIndex) {
+                        return { ...col, quantity: newQuantity };
+                    }
+                    return col;
+                });
+                return { ...item, color: newColors };
+            }
+            return item;
+        });
+        setSizeColorCombos(newCombos);
+
+        console.log("change in combo", newCombos);
+    };
+
 
 
 
     if (loading) {
         return <div>Loading...</div>;
     }
+
+    if (!sizeColorCombos || !categories.length) {
+        console.log("sizecolorcombo not available yet")
+        return <div>No product data available or categories failed to load.</div>;
+    }
+
     return (
         <div className="container mx-auto p-4 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <h1 className="text-2xl font-bold mb-4">Edit Product</h1>
@@ -319,7 +318,7 @@ export default function AdminEditProduct() {
             {/* Size and Color Management Section */}
             <div className="mb-8">
                 <h2 className="text-xl font-semibold mb-2">Size & Color Stock</h2>
-                {sizeColorCombos.map((sizeCombo, sizeIndex) => (
+                {sizeColorCombos?.map((sizeCombo, sizeIndex) => (
                     <div key={sizeIndex} className="mb-4">
                         <h3 className="font-semibold">Size: {sizeCombo.size.size}</h3>
                         {sizeCombo.color.map((colorCombo, colorIndex) => (
@@ -344,7 +343,7 @@ export default function AdminEditProduct() {
 
             </div>
 
-            {/* Add New Size/Color Combination Section */}
+
             {/* Add New Size/Color Combination Section */}
             <div className="mb-8">
                 <h2 className="text-xl font-semibold mb-2">Add New Size/Color</h2>
@@ -361,9 +360,9 @@ export default function AdminEditProduct() {
                                 setNewSize(selectedSize); // Update state with size
                                 const selectedSizeData = availableSizes.find(size => Number(size.size) === Number(selectedSize));
 
-                        
+
                                 console.log(selectedSize)
-                                
+
                                 if (selectedSizeData) {
                                     console.log('Selected Size ID:', selectedSizeData.id); // Check if ID is being found
                                     setNewSizeId(selectedSizeData.id)
@@ -418,34 +417,7 @@ export default function AdminEditProduct() {
                 </div>
             </div>
 
-            {/* Image Gallery Section */}
-            <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-2">Product Images</h2>
-                <input 
-                    type="file" 
-                     
-                    onChange={handleFileChange} 
-                    className="mb-4 block w-full text-sm text-gray-500
-                               file:mr-4 file:py-2 file:px-4
-                               file:rounded file:border-0
-                               file:text-sm file:font-semibold
-                               file:bg-blue-50 file:text-blue-700
-                               hover:file:bg-blue-100"
-                />
-                <div className="flex flex-wrap gap-4">
-                    {images.map((image) => (
-                        <div key={image.id} className="relative">
-                            <img src={image.url} alt="Uploaded" className="h-32 w-32 object-cover" />
-                            <button
-                                onClick={() => handleDeleteImage(image.id)}
-                                className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
-                                style={{ top: '-10px', right: '-10px' }}>
-                                &times;
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            </div>
+
 
             {/* Save/Submit Button */}
             <div className="flex items-center justify-between">
@@ -454,7 +426,7 @@ export default function AdminEditProduct() {
                     type="button"
                     onClick={handleSaveChanges}
                 >
-                    Post Product
+                    Edit Product
                 </button>
             </div>
         </div>

@@ -19,18 +19,32 @@ const AdminHome = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/product/productsWithLowStock`);
-        console.log("response", response)
+        // Retrieve the token from storage
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+          console.error('No token found, check login status');
+          setLoading(false);
+          return;
+        }
+
+        // Configure the request with the Authorization header
+        const response = await axios.get(`http://localhost:8080/admin/product/productsWithLowStock`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        console.log("response", response);
         setProductsWithLowStock(response.data); // Assuming the data is an array of products
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching product details:', error);
+      } finally {
         setLoading(false);
       }
     };
 
     fetchProductDetails();
-  }, []);
+}, []);
 
   if (loading) {
     return <div>Loading...</div>;

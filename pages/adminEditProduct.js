@@ -11,7 +11,7 @@ export default function AdminAddProductPage() {
 
     const [availableSizes, setAvailableSizes] = useState([]);
     const [availableColors, setAvailableColors] = useState([]);
-   
+
     const id = 102;
 
 
@@ -30,7 +30,7 @@ export default function AdminAddProductPage() {
     const [newQuantity, setNewQuantity] = useState(0);
     const [loading, setLoading] = useState(true);
 
-   
+
 
     // Handlers to update state...
 
@@ -62,7 +62,17 @@ export default function AdminAddProductPage() {
                 // Assuming this format based on your initial data structure
             })
             .catch(error => console.error('Failed to load product details:', error));
+        // Fetch product details
+        fetch(`http://localhost:8080/product/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("data for product", data)
+                setProduct(data.product);
+                setSizeColorCombos(data.sizeColorDTO); // Assuming this format based on your initial data structure
+            })
+            .catch(error => console.error('Failed to load product details:', error));
         setLoading(false);
+
     }, [id]);
 
     // Function to add a new size/color combination
@@ -91,7 +101,7 @@ export default function AdminAddProductPage() {
                     isNewSizeColorComboAdded = true;
                 } else {
                     // Add new color to the existing size
-                  //  const newColorId = Math.max(...combo.color.map(c => c.color.id), 0) + 1;
+                    //  const newColorId = Math.max(...combo.color.map(c => c.color.id), 0) + 1;
                     combo.color.push({
                         color: { id: newColorId, color: standardizedNewColor },
                         quantity: newQuantity
@@ -100,7 +110,7 @@ export default function AdminAddProductPage() {
                 }
             }
 
-            
+
             return combo;
         });
 
@@ -123,79 +133,79 @@ export default function AdminAddProductPage() {
         setNewQuantity(0);
     };
 
- // State to store the images
- const [images, setImages] = useState([]);
+    // State to store the images
+    const [images, setImages] = useState([]);
 
- // Handle file uploads
- const handleFileChange = (event) => {
-     // Convert uploaded files to an array and add to the existing images array
-     const newImages = Array.from(event.target.files).map(file => ({
-         id: Math.random(), // Assign a random ID (or handle this with a more robust method)
-         url: URL.createObjectURL(file),
-         file
-     }));
-
-    
-     setImages(prevImages => [...prevImages, ...newImages]);
- };
-
- // Handle deleting an image
- const handleDeleteImage = (imageId) => {
-     setImages(prevImages => prevImages.filter(image => image.id !== imageId));
-     // Optional: Revoke the URL to free up memory
-     const imageToDelete = images.find(image => image.id === imageId);
-     URL.revokeObjectURL(imageToDelete.url);
- };
+    // Handle file uploads
+    const handleFileChange = (event) => {
+        // Convert uploaded files to an array and add to the existing images array
+        const newImages = Array.from(event.target.files).map(file => ({
+            id: Math.random(), // Assign a random ID (or handle this with a more robust method)
+            url: URL.createObjectURL(file),
+            file
+        }));
 
 
-
- const handleSaveChanges = async (e) => {
-    e.preventDefault();
-    console.log("see what items I am sending", sizeColorCombos)
-
-    const formData = new FormData();
-
-    // Append image files to FormData
-    images.forEach(image => {
-        formData.append("image", image.file);
-    });
-
-    // Construct JSON data
-    const jsonData = {
-        product: {
-            
-            name: productName,
-            price: productPrice,
-            category: { categoryID: parseInt(productCategory) },
-            description: productDescription,
-        },
-        sizeColorDTO: sizeColorCombos,
-        images: [] // Assuming images are managed differently, adjust as per your requirements
+        setImages(prevImages => [...prevImages, ...newImages]);
     };
 
-    // Append JSON data as a string and set type as application/json
-    formData.append('product', new Blob([JSON.stringify(jsonData)], {type: "application/json"}));
-
-    // try {
-    //     const response = await fetch("http://localhost:8080/product", {
-    //         method: "POST",
-    //         body: formData,
-    //         // Do not set Content-Type manually; let the browser handle it
-    //     });
-
-    //     if (!response.ok) {
-    //         throw new Error(`HTTP error! Status: ${response.status}`);
-    //     }
-
-    //     const result = await response.json();
-    //     console.log('Success:', result);
-    // } catch (error) {
-    //     console.error('Upload failed:', error);
-    // }
-};
+    // Handle deleting an image
+    const handleDeleteImage = (imageId) => {
+        setImages(prevImages => prevImages.filter(image => image.id !== imageId));
+        // Optional: Revoke the URL to free up memory
+        const imageToDelete = images.find(image => image.id === imageId);
+        URL.revokeObjectURL(imageToDelete.url);
+    };
 
 
- 
+
+    const handleSaveChanges = async (e) => {
+        e.preventDefault();
+        console.log("see what items I am sending", sizeColorCombos)
+
+        const formData = new FormData();
+
+        // Append image files to FormData
+        images.forEach(image => {
+            formData.append("image", image.file);
+        });
+
+        // Construct JSON data
+        const jsonData = {
+            product: {
+
+                name: productName,
+                price: productPrice,
+                category: { categoryID: parseInt(productCategory) },
+                description: productDescription,
+            },
+            sizeColorDTO: sizeColorCombos,
+            images: [] // Assuming images are managed differently, adjust as per your requirements
+        };
+
+        // Append JSON data as a string and set type as application/json
+        formData.append('product', new Blob([JSON.stringify(jsonData)], { type: "application/json" }));
+
+        // try {
+        //     const response = await fetch("http://localhost:8080/product", {
+        //         method: "POST",
+        //         body: formData,
+        //         // Do not set Content-Type manually; let the browser handle it
+        //     });
+
+        //     if (!response.ok) {
+        //         throw new Error(`HTTP error! Status: ${response.status}`);
+        //     }
+
+        //     const result = await response.json();
+        //     console.log('Success:', result);
+        // } catch (error) {
+        //     console.error('Upload failed:', error);
+        // }
+    };
+
+
+
 
     const handleRemoveSizeColorCombo = (sizeIndex, colorIndex) => {
         const updatedSizeColorCombos = [...sizeColorCombos];
@@ -332,9 +342,9 @@ export default function AdminAddProductPage() {
                                 setNewSize(selectedSize); // Update state with size
                                 const selectedSizeData = availableSizes.find(size => Number(size.size) === Number(selectedSize));
 
-                        
+
                                 console.log(selectedSize)
-                                
+
                                 if (selectedSizeData) {
                                     console.log('Selected Size ID:', selectedSizeData.id); // Check if ID is being found
                                     setNewSizeId(selectedSizeData.id)
@@ -390,7 +400,7 @@ export default function AdminAddProductPage() {
             </div>
 
             {/* Image Gallery Section */}
-           
+
 
             {/* Save/Submit Button */}
             <div className="flex items-center justify-between">
