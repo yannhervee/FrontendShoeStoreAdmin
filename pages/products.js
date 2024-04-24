@@ -7,138 +7,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 
-// const products = [
-//   {
-//       id: 1,
-//       name: 'Eco-friendly Sneakers',
-//       price: 75.00,
-//       category: 'Footwear',
-//       colors: [
-//           { color: 'Red', quantity: 12 },
-//           { color: 'Blue', quantity: 8 },
-//           { color: 'Green', quantity: 5 }
-//       ],
-//   },
-//   {
-//       id: 2,
-//       name: 'Recycled Wool Sweater',
-//       price: 60.00,
-//       category: 'Apparel',
-//       colors: [
-//           { color: 'Gray', quantity: 15 },
-//           { color: 'Black', quantity: 10 }
-//       ],
-//   },
-//   {
-//       id: 3,
-//       name: 'Organic Cotton Jeans',
-//       price: 85.00,
-//       category: 'Apparel',
-//       colors: [
-//           { color: 'Denim Blue', quantity: 20 },
-//           { color: 'Dark Blue', quantity: 6 }
-//       ],
-//   },
-//   {
-//       id: 4,
-//       name: 'Bamboo Fabric T-shirt',
-//       price: 35.00,
-//       category: 'Apparel',
-//       colors: [
-//           { color: 'White', quantity: 30 },
-//           { color: 'Green', quantity: 25 }
-//       ],
-//   },
-//   {
-//       id: 5,
-//       name: 'Recycled Plastic Flip-Flops',
-//       price: 20.00,
-//       category: 'Footwear',
-//       colors: [
-//           { color: 'Yellow', quantity: 22 },
-//           { color: 'Blue', quantity: 18 }
-//       ],
-//   },
-//   {
-//       id: 6,
-//       name: 'Hemp Sun Hat',
-//       price: 45.00,
-//       category: 'Accessories',
-//       colors: [
-//           { color: 'Beige', quantity: 12 },
-//           { color: 'Brown', quantity: 8 }
-//       ],
-//   },
-//   {
-//       id: 7,
-//       name: 'Biodegradable Rubber Rain Boots',
-//       price: 95.00,
-//       category: 'Footwear',
-//       colors: [
-//           { color: 'Black', quantity: 10 },
-//           { color: 'Olive Green', quantity: 10 }
-//       ],
-//   },
-//   {
-//       id: 8,
-//       name: 'Organic Cotton Socks',
-//       price: 12.00,
-//       category: 'Apparel',
-//       colors: [
-//           { color: 'Red', quantity: 40 },
-//           { color: 'Blue', quantity: 30 }
-//       ],
-//   },
-//   {
-//       id: 9,
-//       name: 'Recycled Material Backpack',
-//       price: 120.00,
-//       category: 'Accessories',
-//       colors: [
-//           { color: 'Gray', quantity: 15 },
-//           { color: 'Black', quantity: 15 }
-//       ],
-//   },
-//   {
-//       id: 10,
-//       name: 'Sustainable Wood Sunglasses',
-//       price: 150.00,
-//       category: 'Accessories',
-//       colors: [
-//           { color: 'Wood', quantity: 25 }
-//       ],
-//   },
-//   {
-//       id: 11,
-//       name: 'Cork Wallet',
-//       price: 42.00,
-//       category: 'Accessories',
-//       colors: [
-//           { color: 'Natural Cork', quantity: 35 }
-//       ],
-//   },
-//   {
-//       id: 12,
-//       name: 'Upcycled Fabric Scarf',
-//       price: 29.00,
-//       category: 'Apparel',
-//       colors: [
-//           { color: 'Multicolor', quantity: 20 }
-//       ],
-//   },
-//   {
-//       id: 13,
-//       name: 'Vegan Leather Shoes',
-//       price: 110.00,
-//       category: 'Footwear',
-//       colors: [
-//           { color: 'Black', quantity: 12 },
-//           { color: 'Brown', quantity: 12 }
-//       ],
-//   }
-// ];
-
-
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -167,11 +35,53 @@ useEffect(() => {
   if (loading || !products) {
     return <div>Loading...</div>;
   }
+
+    // Function to handle filter changes
+    const handleFilterChange = (filterType, values) => {
+      const newFilters = { ...filters, [filterType]: values };
+      setFilters(newFilters);
+  
+      let filtered = [...products];
+  
+      // Apply all active filters together
+      if (Object.values(newFilters).flat().length > 0) {
+        filtered = filtered.filter((product) => {
+          return Object.entries(newFilters).every(([type, selectedValues]) => {
+            if (type === "size" && selectedValues.length > 0) {
+              return selectedValues.some((size) => product.sizes.includes(parseInt(size)));
+            }
+            if (type === "color" && selectedValues.length > 0) {
+              // console.log("Selected Colors:", selectedValues);
+              // console.log("Product Colors:", product.color_names);
+          
+              return selectedValues.some((selectedColor) =>
+                  product.color_names.some((productColor) =>
+                      productColor.toLowerCase() === selectedColor.toLowerCase()
+                  )
+              );
+          }
+          
+          
+            if (type === "priceRange" && selectedValues.length > 0) {
+              return selectedValues.some((priceRange) => {
+                const [minStr, maxStr] = priceRange.split(" - ");
+                const minPrice = parseInt(minStr.replace("$", ""));
+                const maxPrice = parseInt(maxStr.replace("$", ""));
+                return product.price >= minPrice && product.price <= maxPrice;
+              });
+            }
+            return true;
+          });
+        });
+      }
+  
+      setFilteredProducts(filtered);
+    };
   return (
     <div className="p-6 pl-0 flex bg-gray-100 rounded-lg">
     <div className="flex-1 py-4 pr-4"> {/* Added pr-4 to give some space before the sidebar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mr-2">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <Link key={product.productId} href={`/product/${product.productId}`} passHref>
             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between">
               <div className="bg-gray-300 h-48 w-full mb-4">
@@ -208,7 +118,7 @@ useEffect(() => {
 
         {/* Filter Component */}
         <div className="flex-1 overflow-y-auto">
-          <LeftMenu />
+          <LeftMenu onFilterChange={handleFilterChange}/>
         </div>
     </div>
 </div>
