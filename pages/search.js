@@ -51,7 +51,7 @@ const SearchResultsPage = () => {
       <div className="grid grid-cols-3 gap-4">
         
         {products.map(product => (
-          <Link key={product.productId} href={`/products/${product.productId}`} passHref>
+          <Link key={product.productId} href={`/product/${product.productId}`} passHref>
           <div className="bg-white shadow rounded p-4">
             <img src={product.image.url} alt={product.name} className="w-full h-40 object-cover" />
             <h2 className="text-lg font-semibold">{product.name}</h2>
