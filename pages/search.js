@@ -49,13 +49,16 @@ const SearchResultsPage = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Search Results for "{query}"</h1>
       <div className="grid grid-cols-3 gap-4">
+        
         {products.map(product => (
-          <div key={product.productId} className="bg-white shadow rounded p-4">
+          <Link key={product.productId} href={`/products/${product.productId}`} passHref>
+          <div className="bg-white shadow rounded p-4">
             <img src={product.image.url} alt={product.name} className="w-full h-40 object-cover" />
             <h2 className="text-lg font-semibold">{product.name}</h2>
             <p className="text-gray-600">${product.price}</p>
             <p className="text-gray-500">Category: {product.category}</p>
           </div>
+          </Link>
         ))}
       </div>
     </div>
