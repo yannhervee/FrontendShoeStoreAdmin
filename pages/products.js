@@ -32,6 +32,39 @@ useEffect(() => {
         setLoading(false);
       });
   }, []);
+
+  const handleRemoveButton = async(productId ) => {
+    const token = sessionStorage.getItem('token');
+    console.log("here")
+    console.log("productId", productId)
+    try{
+      const response = await axios.delete(`http://localhost:8080/admin/deleteProduct/${productId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+     console.log("response admin delete", response.data)
+    //  console.log(' items to filter', filteredProducts);
+     setFilteredProducts (filteredProducts.filter(item => !(item.productId ===productId)))
+     // const updatedCart = cartItems.filter(item => !(item.productId === productId && item.sizeId === sizeId && item.colorId === colorId));
+    //  console.log('left items', filteredProducts);
+      
+      
+    } catch(error){
+      console.error('Error deleting product', error);
+    }
+    // const response = await axios.post(`http://localhost:8080/admin/deleteProduct/${productId}`, {
+    //   headers: {
+    //     'Authorization': `Bearer ${token}`
+    //   }
+    // })
+    // console.log("response admin delete", response.data)
+   // router.push("/checkoutShip");
+
+   
+
+  };
+
   if (loading || !products) {
     return <div>Loading...</div>;
   }
@@ -82,23 +115,26 @@ useEffect(() => {
     <div className="flex-1 py-4 pr-4"> {/* Added pr-4 to give some space before the sidebar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mr-2">
           {filteredProducts.map((product) => (
-            <Link key={product.productId} href={`/product/${product.productId}`} passHref>
+
             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between">
+                          <Link key={product.productId} href={`/product/${product.productId}`} passHref>
               <div className="bg-gray-300 h-48 w-full mb-4">
               <img src={product.image.url} alt={"shoes image"} className="w-full h-full object-contain rounded-lg mb-4" />
                 </div> {/* Placeholder for the product image */}
               <h2 className="text-xl font-bold">{product.name}</h2>
               <p className="text-gray-700">Price: ${product.price.toFixed(2)}</p>
               <p className="text-gray-600">Category: {product.category}</p>
+              </Link>
             
               <div className="flex justify-between mt-4">
-                <button className="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded shadow">Remove</button>
+                <button className="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded shadow" onClick={() => handleRemoveButton(product.productId)}>Remove</button>
                 <Link href={`sale/${product.productId}`}className="text-white bg-yellow-500 hover:bg-yellow-700 px-3 py-2 rounded shadow">Put on Sale</Link>
                 {/* <Link href={`editProduct/${item.productId}`}></Link> */}
                 <Link href={`editProduct/${product.productId}`} className="text-white bg-blue-500 hover:bg-blue-700 px-3 py-2 rounded shadow">Edit</Link>
               </div>
+              
             </div>
-            </Link>
+           
           ))}
         </div>
     </div>
