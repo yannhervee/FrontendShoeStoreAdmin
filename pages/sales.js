@@ -153,7 +153,7 @@ const ProductList = () => {
             .then((res) => {
                 setProducts(res.data);
                 setFilteredProducts(res.data); // Initialize filtered products with all products
-                console.log("products", res.data)
+                console.log("products sales", res.data)
                   setLoading(false);
             })
             .catch((error) => {
@@ -170,7 +170,7 @@ const ProductList = () => {
             <div className="flex-1 py-4 pr-4"> {/* Added pr-4 to give some space before the sidebar */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mr-2">
                     {products.map((product) => (
-                        <Link key={product.id} href={`/product/${product.productId.id}`} passHref>
+                        <Link key={product.id} href={`/sale/${product.productId.id}`} passHref>
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between">
                                 <div className="bg-gray-300 h-48 w-full mb-4"></div> {/* Placeholder for the product image */}
                                 <h2 className="text-xl font-bold">{product.name}</h2>
