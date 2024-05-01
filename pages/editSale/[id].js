@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
-const SaleItemPage = () => {
+const SaleEditPage = () => {
     const [salePrice, setSalePrice] = useState(1.99); // Example starting sale price
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -76,6 +76,14 @@ const SaleItemPage = () => {
         };
         console.log("sending", saleData)
     
+        // try {
+        //     const token = sessionStorage.getItem('token'); // Retrieve the token from sessionStorage
+        //     const response = await axios.post('http://localhost:8080/admin/sale', saleData, {
+        //         headers: {
+        //             'Authorization': `Bearer ${token}`,  // Assuming your endpoint requires authorization
+        //             'Content-Type': 'application/json'
+        //         }
+        //     });
         try {
             const token = sessionStorage.getItem('token'); 
             const response = await axios.post('http://localhost:8080/product/admin/postProductAsSale', saleData, {
@@ -120,13 +128,13 @@ const SaleItemPage = () => {
             </div>
             
             {/* Form to Update Sale Price */}
-            <form onSubmit={handleSale} className="flex items-center mb-4">
+            <form onSubmit={handlePriceUpdate} className="flex items-center mb-4">
                 <input type="number" value={salePrice} onChange={e => setSalePrice(e.target.value)} className="mr-2 p-2 border rounded" />
                 {/* <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Update Sale Price
                 </button> */}
                  <button type="submit" className="bg-yellow-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                Put on Sale
+                Update sale price
             </button>
             </form>
             
@@ -138,4 +146,4 @@ const SaleItemPage = () => {
     );
 };
 
-export default SaleItemPage;
+export default SaleEditPage;
