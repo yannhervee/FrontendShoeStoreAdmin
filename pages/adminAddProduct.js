@@ -172,7 +172,15 @@ export default function AdminAddProductPage() {
             ecoImpact: ecoImpact,
         },
         sizeColorDTO: sizeColorCombos,
-        images: [] // Assuming images are managed differently, adjust as per your requirements
+        images: [], 
+        productEcoImpactInformation: [
+            {
+              ecoImpact: ecoImpact,
+                
+              
+            }
+            
+          ]
     };
 
     // Append JSON data as a string and set type as application/json

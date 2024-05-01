@@ -14,6 +14,8 @@ export default function AdminEditProduct() {
     const [availableColors, setAvailableColors] = useState([]);
     const [ecoImpact, setEcoImpact] = useState();
     const [product, setProduct] = useState();
+    const [ecoId, setEcoId] = useState(0);
+    
 
     // const id = 102;
 
@@ -80,8 +82,10 @@ export default function AdminEditProduct() {
                setProductName(data.product.name)
                setProductDescription(data.product.description)
                setProductCategory(data.product.category.categoryID)
-                setSizeColorCombos(data.sizeColorDTO); // Assuming this format based on your initial data structure
-                // console.log("sizeColor", sizeColorCombos)
+                setSizeColorCombos(data.sizeColorDTO);
+                setEcoImpact(data.productEcoImpactInformation[0].ecoImpact)
+                setEcoId(data.productEcoImpactInformation[0].id)
+
             })
             .catch(error => console.error('Failed to load product details:', error));
 
@@ -147,8 +151,9 @@ export default function AdminEditProduct() {
         setNewQuantity(0);
     };
 
-    const handleSaveChanges = async () => {
+    const handleSaveChanges = async (e) => {
         // Construct the request body according to the backend's expected format
+        e.preventDefault();
 
         console.log("what I am sending")
         const requestBody = {
@@ -166,7 +171,16 @@ export default function AdminEditProduct() {
             sizeColorDTO: sizeColorCombos,
              
             price: parseFloat(productPrice),
-            images: []
+            images: [],
+            productEcoImpactInformation: [
+                {
+                  ecoImpact: ecoImpact,
+                  id: ecoId
+                  
+                  
+                  
+                }
+              ]
         };
     
         console.log("request body", requestBody)
@@ -180,13 +194,12 @@ export default function AdminEditProduct() {
             });
             console.log('Product updated successfully:', response.data);
             // Handle post-update logic here, such as redirecting the user or showing a success message
-            router.push('/products')
+          //  router.push('/products')
         } catch (error) {
             console.error('Failed to update product:', error.response?.data || error.message);
             // Handle errors, such as displaying an error message to the user
         }
     };
-    
     
 
     const handleRemoveSizeColorCombo = (sizeIndex, colorIndex) => {

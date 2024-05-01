@@ -34,7 +34,7 @@ const SaleItemPage = () => {
             const response = await axios.get(`http://localhost:8080/product/${id}`)
             
     
-            console.log("response", response.data);
+            console.log("response for sale", response.data);
             setProduct(response.data); // Assuming the data is an array of products
           } catch (error) {
             console.error('Error fetching product details:', error);

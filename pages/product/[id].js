@@ -15,9 +15,6 @@ const ProductDetailsPage = () => {
   const [availableColors, setAvailableColors] = useState([]);
   const [currentImages, setCurrentImages] = useState([]);
 
-
-
-
   const router = useRouter();
   const { id } = router.query; // Get the product ID from the URL
 
@@ -31,8 +28,7 @@ const ProductDetailsPage = () => {
        
         setCurrentImages(product.images); // Initial image set up
         
-        console.log("product", response.data);
-
+        
         // Set default selected size
         if (response.data.sizeColorDTO.length > 0) {
           setSelectedSize(response.data.sizeColorDTO[0].size.size);
@@ -45,7 +41,7 @@ const ProductDetailsPage = () => {
       fetch('http://localhost:8080/sizes')
         .then(response => response.json())
         .then(data => {
-          console.log("data for sizes", data);
+         console.log("prodcut", product) 
           setAvailableSizes(data)
         })
         .catch(error => console.error('Failed to load sizes:', error));
@@ -54,7 +50,7 @@ const ProductDetailsPage = () => {
       fetch('http://localhost:8080/colors')
         .then(response => response.json())
         .then(data => {
-          console.log("data for colors", data);
+          
           setAvailableColors(data)
         })
         .catch(error => console.error('Failed to load colors:', error));
@@ -320,7 +316,6 @@ const ProductDetailsPage = () => {
 
 
       {/*************************************Temp return code adjust above ***********/}
-
 
     </>
   );
