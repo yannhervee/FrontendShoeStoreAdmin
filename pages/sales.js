@@ -161,6 +161,10 @@ const ProductList = () => {
                 setLoading(false);
             });
     }, []);
+    const removeFromSale = (product) => {
+        console.log("product"), product;
+    }
+
 
     if (loading || !products) {
         return <div>Loading...</div>;
@@ -170,13 +174,15 @@ const ProductList = () => {
             <div className="flex-1 py-4 pr-4"> {/* Added pr-4 to give some space before the sidebar */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mr-2">
                     {products.map((product) => (
-                        <Link key={product.id} href={`/sale/${product.productId.id}`} passHref>
+                        <Link href={`/sale/${product.onSaleProducts.productId.id}`} passHref>
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between">
-                                <div className="bg-gray-300 h-48 w-full mb-4"></div> {/* Placeholder for the product image */}
-                                <h2 className="text-xl font-bold">{product.name}</h2>
-                                <p className="text-red-700"> Sale Price: ${product.salePrice.toFixed(2)}</p>
-                                <p className="text-gray-600"> Actual product Price: ${product.productId.price.toFixed(2)}</p>
-                                <p className="text-gray-600">Category: {product.productId.category.category}</p>
+                                <div className="bg-gray-300 h-48 w-full mb-4">
+                                <img src={product.images[0].url} alt={product.onSaleProducts.productId.name} className="h-full w-full rounded mr-4" />
+                                    </div> {/* Placeholder for the product image */}
+                                <h2 className="text-xl font-bold">{product.onSaleProducts.productId.name}</h2>
+                                <p className="text-red-700"> Sale Price: ${product.onSaleProducts.salePrice.toFixed(2)}</p>
+                                <p className="text-gray-600"> Actual product Price: ${product.onSaleProducts.currentPrice.toFixed(2)}</p>
+                                <p className="text-gray-600">Category: {product.onSaleProducts.productId.category.category}</p>
                                 <div className="flex flex-wrap mb-2">
                                     {/* {product.colors.map((color, index) => (
                   <span key={index} className="text-xs font-semibold mr-2 mb-1 px-2.5 py-0.5 rounded bg-blue-100 text-blue-800">
@@ -185,7 +191,7 @@ const ProductList = () => {
                 ))} */}
                                 </div>
                                 <div className="flex justify-between mt-4">
-                                    <button className="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded shadow">Remove From Sales</button>
+                                    <button className="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded shadow" onClick={() => removeFromSale(product)}>Remove From Sales</button>
                                     <button className="text-white bg-blue-500 hover:bg-blue-700 px-3 py-2 rounded shadow">Edit</button>
                                 </div>
                             </div>

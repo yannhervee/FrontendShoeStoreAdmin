@@ -144,7 +144,7 @@ useEffect(() => {
         {/* Add New Product Section */}
         <div className="bg-white p-4 shadow rounded-lg mb-4">
           <h2 className="text-xl font-semibold mb-3">Actions</h2>
-          <Link href="/add-product">
+          <Link href="/adminAddProduct">
             <span className="block bg-blue-500 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded">
               <FontAwesomeIcon icon={faPlus} className="mr-2" />
               Add New Product
