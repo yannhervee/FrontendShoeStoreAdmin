@@ -232,8 +232,6 @@ export default function AdminAddProductPage() {
     };
 
 
-
-
     if (loading) {
         return <div>Loading...</div>;
     }
