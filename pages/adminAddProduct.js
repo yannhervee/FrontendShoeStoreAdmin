@@ -361,7 +361,7 @@ export default function AdminAddProductPage() {
                         <label htmlFor="newSize" className="block text-sm font-medium text-gray-700">Size</label>
                         <select
                             id="newSize"
-                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="text-black mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                             value={newSize}
                             onChange={(e) => {
                                 const selectedSize = e.target.value;
@@ -388,7 +388,7 @@ export default function AdminAddProductPage() {
                         <label htmlFor="newColor" className="block text-sm font-medium text-gray-700">Color</label>
                         <select
                             id="newColor"
-                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="text-black mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                             value={newColor}
                             onChange={(e) => {
                                 const selectedColorName = e.target.value;
@@ -411,7 +411,7 @@ export default function AdminAddProductPage() {
                         <input
                             type="number"
                             id="newQuantity"
-                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="text-black mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                             value={newQuantity}
                             onChange={(e) => setNewQuantity(parseInt(e.target.value))}
                             min="0"

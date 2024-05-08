@@ -59,6 +59,17 @@ const SaleItemPage = () => {
     const handleSale = async (e) => {
         e.preventDefault();
         console.log('Placing Item on Sale');
+
+
+    // Check if sale price is less than regular price and positive
+    if (parseFloat(salePrice) >= parseFloat(product.product.price)) {
+        alert('Sale price must be less than the regular price.');
+        return; // Exit the function if validation fails
+    }
+    if (parseFloat(salePrice) <= 0) {
+        alert('Sale price must be a positive value.');
+        return; // Exit the function if validation fails
+    }
         const saleData = {
            // id: product.id,  // Assuming 'id' at this level is the same as 'productId.id'
             productId: {
@@ -121,19 +132,13 @@ const SaleItemPage = () => {
             
             {/* Form to Update Sale Price */}
             <form onSubmit={handleSale} className="flex items-center mb-4">
-                <input type="number" value={salePrice} onChange={e => setSalePrice(e.target.value)} className="mr-2 p-2 border rounded" />
-                {/* <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Update Sale Price
-                </button> */}
+                <input type="number" value={salePrice} onChange={e => setSalePrice(e.target.value)} className="mr-2 p-2 border rounded text-black" />
+                
                  <button type="submit" className="bg-yellow-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                 Put on Sale
             </button>
             </form>
             
-            {/* Button to Remove Item from Sale */}
-            {/* <button onClick={handleSale} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                Put on Sale
-            </button> */}
         </div>
     );
 };
