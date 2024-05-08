@@ -6,25 +6,9 @@ const SaleItemPage = () => {
     const [salePrice, setSalePrice] = useState(1.99); // Example starting sale price
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [selectedSize, setSelectedSize] = useState(null);
-    const [selectedColor, setSelectedColor] = useState(null);
-    const [availableSizes, setAvailableSizes] = useState([]);
-    const [availableColors, setAvailableColors] = useState([]);
-    const [currentImages, setCurrentImages] = useState([]);
-  
-  
-  
-  
+
     const router = useRouter();
     const { id } = router.query; // Get the product ID from the URL
-
-    // // Dummy data for the product
-    // const product = {
-    //     name: "Eco-friendly Sneakers",
-    //     description: "These sneakers are made from recycled materials and offer both comfort and style.",
-    //     regularPrice: 100, // Regular price before sales
-    //     imageUrl: "path/to/image" // Since there's no image, we'll use a placeholder
-    // };
 
     useEffect(() => {
         const fetchProductDetails = async () => {
@@ -49,12 +33,6 @@ const SaleItemPage = () => {
       if (loading || !product) {
         return <div>Loading...</div>;
       }
-
-    const handlePriceUpdate = (e) => {
-        e.preventDefault(); // Prevent the default form submission
-        console.log('Update price to:', salePrice);
-        // Logic to update price in the backend
-    };
 
     const handleSale = async (e) => {
         e.preventDefault();

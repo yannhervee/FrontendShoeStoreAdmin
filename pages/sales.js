@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from 'next/router';
 
 
 
@@ -17,6 +18,7 @@ const ProductList = () => {
         priceRange: []
     });
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         axios.get("http://localhost:8080/product/getOnSaleProducts")
@@ -58,6 +60,14 @@ const ProductList = () => {
         }
     }
 
+    const handleEditSale = (product) => {
+        console.log("product", product);
+        localStorage.setItem("saleId", product.onSaleProducts.id)
+        localStorage.setItem("regular", product.onSaleProducts.currentPrice)
+
+        router.push(`editSale/${product.onSaleProducts.productId.id}`)
+    }
+
 
     if (loading || !products) {
         return <div>Loading...</div>;
@@ -82,7 +92,7 @@ const ProductList = () => {
         </Link>
         <div className="flex justify-between mt-4">
             <button className="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded shadow" onClick={() => removeFromSale(product)}>Remove From Sales</button>
-            <button className="text-white bg-blue-500 hover:bg-blue-700 px-3 py-2 rounded shadow">Edit</button>
+            <button className="text-white bg-blue-500 hover:bg-blue-700 px-3 py-2 rounded shadow" onClick={() => handleEditSale(product)}>Edit</button>
         </div>
     </div>
 ))}
