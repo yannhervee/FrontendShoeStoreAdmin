@@ -12,9 +12,9 @@ export default function AdminAddProductPage() {
     const [availableSizes, setAvailableSizes] = useState([]);
     const [availableColors, setAvailableColors] = useState([]);
     const [ecoImpact, setEcoImpact] = useState();
+    const router = useRouter()
    
    // const id = 102;
-
 
     // State for size and color management
     // const [sizeColorCombos, setSizeColorCombos] = useState([
@@ -208,6 +208,7 @@ export default function AdminAddProductPage() {
     
         const result = await response.json();
         console.log('Success:', result);
+        router.push("/products")
     } catch (error) {
         console.error('Upload failed:', error);
     }
@@ -237,11 +238,11 @@ export default function AdminAddProductPage() {
     }
 
     if (!sizeColorCombos || !categories.length) {
-        return <div>No product data available or categories failed to load.</div>;
+        return <div className='text-black'>No product data available or categories failed to load.</div>;
     }
     return (
         <div className="container mx-auto p-4 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h1 className="text-2xl font-bold mb-4">Add New Product</h1>
+            <h1 className="text-2xl font-bold mb-4 text-black">Add New Product</h1>
 
             {/* Product Information Section */}
             <div className="mb-8">
@@ -324,13 +325,13 @@ export default function AdminAddProductPage() {
 
             {/* Size and Color Management Section */}
             <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-2">Size & Color Stock</h2>
+                <h2 className="text-xl font-semibold mb-2 text-black">Size & Color Stock</h2>
                 {sizeColorCombos.map((sizeCombo, sizeIndex) => (
                     <div key={sizeIndex} className="mb-4">
-                        <h3 className="font-semibold">Size: {sizeCombo.size.size}</h3>
+                        <h3 className="font-semibold text-black">Size: {sizeCombo.size.size}</h3>
                         {sizeCombo.color.map((colorCombo, colorIndex) => (
                             <div key={colorIndex} className="flex items-center mb-2">
-                                <p className="w-20 mr-4">{colorCombo.color.color}</p>
+                                <p className="w-20 mr-4 text-black">{colorCombo.color.color}</p>
                                 <input
                                     type="number"
                                     className="shadow appearance-none border rounded py-2 px-3 text-gray-700 mr-4"

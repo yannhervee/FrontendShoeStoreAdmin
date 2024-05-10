@@ -194,7 +194,7 @@ export default function AdminEditProduct() {
             });
             console.log('Product updated successfully:', response.data);
             // Handle post-update logic here, such as redirecting the user or showing a success message
-          //  router.push('/products')
+           router.push('/products')
         } catch (error) {
             console.error('Failed to update product:', error.response?.data || error.message);
             // Handle errors, such as displaying an error message to the user
@@ -217,7 +217,31 @@ export default function AdminEditProduct() {
         setSizeColorCombos(updatedSizeColorCombos);
     };
 
+    // const handleStockChange = (sizeIndex, colorIndex, newQuantity) => {
+    //     const newCombos = sizeColorCombos.map((item, idx) => {
+    //         if (idx === sizeIndex) {
+    //             const newColors = item.color.map((col, cIdx) => {
+    //                 if (cIdx === colorIndex) {
+    //                     return { ...col, quantity: newQuantity };
+    //                 }
+    //                 return col;
+    //             });
+    //             return { ...item, color: newColors };
+    //         }
+    //         return item;
+    //     });
+    //     setSizeColorCombos(newCombos);
+
+    //     console.log("change in combo", newCombos);
+    // };
+
     const handleStockChange = (sizeIndex, colorIndex, newQuantity) => {
+        // Ensure newQuantity is a positive number
+        if (newQuantity <= 0) {
+            alert('Quantity must be a positive number.');
+            return; // Early return to prevent updating with invalid data
+        }
+    
         const newCombos = sizeColorCombos.map((item, idx) => {
             if (idx === sizeIndex) {
                 const newColors = item.color.map((col, cIdx) => {
@@ -231,12 +255,10 @@ export default function AdminEditProduct() {
             return item;
         });
         setSizeColorCombos(newCombos);
-
+    
         console.log("change in combo", newCombos);
     };
-
-
-
+    
 
     if (loading || !product) {
         return <div>Loading...</div>;
@@ -244,16 +266,16 @@ export default function AdminEditProduct() {
 
     if (!sizeColorCombos || !categories.length) {
         console.log("sizecolorcombo not available yet")
-        return <div>No product data available or categories failed to load.</div>;
+        return <div className='text-re'>No product data available or categories failed to load.</div>;
     }
 
     return (
         <div className="container mx-auto p-4 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h1 className="text-2xl font-bold mb-4">Edit Product</h1>
+            <h1 className="text-2xl font-bold mb-4 text-black ">Edit Product</h1>
 
             {/* Product Information Section */}
             <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-2">Product Information</h2>
+                <h2 className="text-xl text-black font-semibold mb-2">Product Information</h2>
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="productName">
                         Name
@@ -332,13 +354,13 @@ export default function AdminEditProduct() {
 
             {/* Size and Color Management Section */}
             <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-2">Size & Color Stock</h2>
+                <h2 className="text-black text-xl font-semibold mb-2">Size & Color Stock</h2>
                 {sizeColorCombos?.map((sizeCombo, sizeIndex) => (
                     <div key={sizeIndex} className="mb-4">
-                        <h3 className="font-semibold">Size: {sizeCombo.size.size}</h3>
+                        <h3 className="text-black font-semibold">Size: {sizeCombo.size.size}</h3>
                         {sizeCombo.color.map((colorCombo, colorIndex) => (
                             <div key={colorIndex} className="flex items-center mb-2">
-                                <p className="w-20 mr-4">{colorCombo.color.color}</p>
+                                <p className="text-black w-20 mr-4">{colorCombo.color.color}</p>
                                 <input
                                     type="number"
                                     className="shadow appearance-none border rounded py-2 px-3 text-gray-700 mr-4"
@@ -361,13 +383,13 @@ export default function AdminEditProduct() {
 
             {/* Add New Size/Color Combination Section */}
             <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-2">Add New Size/Color</h2>
+                <h2 className="text-xl font-semibold mb-2 text-black">Add New Size/Color</h2>
                 <div className="flex flex-wrap items-center gap-4">
                     <div>
                         <label htmlFor="newSize" className="block text-sm font-medium text-gray-700">Size</label>
                         <select
                             id="newSize"
-                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md text-black"
                             value={newSize}
                             onChange={(e) => {
                                 const selectedSize = e.target.value;
@@ -394,7 +416,7 @@ export default function AdminEditProduct() {
                         <label htmlFor="newColor" className="block text-sm font-medium text-gray-700">Color</label>
                         <select
                             id="newColor"
-                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md text-black"
                             value={newColor}
                             onChange={(e) => {
                                 const selectedColorName = e.target.value;
@@ -417,7 +439,7 @@ export default function AdminEditProduct() {
                         <input
                             type="number"
                             id="newQuantity"
-                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="text-black mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                             value={newQuantity}
                             onChange={(e) => setNewQuantity(parseInt(e.target.value))}
                             min="0"
