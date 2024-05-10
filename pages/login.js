@@ -86,9 +86,6 @@ const LoginPage = () => {
                         LOGIN
                     </button>
 
-                    <div className="text-center mt-4">
-                        <a href="#" className="font-medium text-sm text-green-600 hover:underline">Forgot password?</a>
-                    </div>
                 </div>
             </div>
         </div>
